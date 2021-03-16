@@ -3,6 +3,7 @@ from keys import ameritrade
 import requests, time, re
 import pandas as pd
 import pickle as pkl
+import os
 
 url = 'https://api.tdameritrade.com/v1/instruments'
 
@@ -39,18 +40,19 @@ for file in files:
     with open(file, 'rb') as f:
         info = pkl.load(f)
         tickers = list(info) # points below can be changed to preference. see data ['tickerCode']
-        points = ['symbol','netProfitMarginMRQ','peRatio','pegRatio','high52']
+        points = ['symbol','netProfitMarginMRQ','peRatio','pegRatio','high52', 'currentRatio']
         for ticker in tickers:
             tick = []
             for point in points:
                 tick.append(info[ticker]['fundamental'][point])
             data.append(tick)
-#        os.remove(file) - not working. manual delete
+ #       time.sleep(1)
+ #       os.remove(file)# - not working. manual delete
 
-points = ['symbol','Margin','PE','PEG','high52']
+points = ['symbol','Margin','PE','PEG','high52','CR']
 
 df_results = pd.DataFrame(data,columns=points)
-df_peg = df_results[(df_results['PEG'] < 1) & (df_results['PEG'] > 0) & (df_results['Margin'] > 20) & (df_results['PE'] > 10)]
+df_peg = df_results[(df_results['PEG'] < 0.8) & (df_results['PEG'] > 0.5) & (df_results['Margin'] > 20) & (df_results['PE'] > 10) & (df_results['CR'] > 1)]
 #use df_peg to find shortlist
 
 # use the statement below (can be modified) as a filter
@@ -79,6 +81,5 @@ def view(size):
 #new = df['Symbol'].isin(df_symbols)
 # new    ------------ check for symbol in ...
 # this is how the data is detached from list
-
-
+# 0.5 < PEG RATIO < 0.8 *** filter PREVIOUS: 0 < PEG < 1
 
