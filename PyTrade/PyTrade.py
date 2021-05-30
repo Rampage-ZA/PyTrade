@@ -46,8 +46,8 @@ for file in files:
             for point in points:
                 tick.append(info[ticker]['fundamental'][point])
             data.append(tick)
- #       time.sleep(1)
- #       os.remove(file)# - not working. manual delete
+    time.sleep(1)
+    os.remove(file)# - not working. manual delete
 
 points = ['symbol','Margin','PE','PEG','high52','CR']
 
